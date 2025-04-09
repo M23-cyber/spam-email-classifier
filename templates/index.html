@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spam Email Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button class="dark-toggle" onclick="toggleDark()">🌙</button>
+
+    <div class="container glass">
+        <h1>Spam Email Classifier</h1>
+        <p class="subtitle">Paste your email or a URL below:</p>
+
+        <textarea id="emailText" placeholder="Enter email or URL..."></textarea>
+        <div class="btn-row">
+            <button onclick="checkSpam()" id="checkBtn">🚀 Analyze</button>
+            <button onclick="clearText()">🧼 Clear</button>
+        </div>
+
+        <div id="loader" class="hidden">🔍 Analyzing...</div>
+        <div id="result"></div>
+        <div id="confidence"></div>
+    </div>
+
+    <footer class="footer">
+        Made by Manna, Kulwinder, Raghav, Ravi and Shivansh
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
