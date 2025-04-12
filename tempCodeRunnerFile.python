@@ -1,0 +1,7 @@
+from datasets import load_dataset
+
+# Download and load the SpamAssassin dataset
+dataset = load_dataset("talby/spamassassin")
+
+# View a sample
+print(dataset['train'][0])

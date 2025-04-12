@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, jsonify
 import pickle
 import re
+import traceback
 
 app = Flask(__name__)
 
-# Load vectorizer and model
-with open("spam_classifier.pkl", "rb") as f:
-    vectorizer, clf = pickle.load(f)
+import joblib
+
+model = joblib.load('spam_classifier.pkl')
 
 @app.route("/")
 def home():
@@ -19,7 +20,7 @@ def classifier():
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
-    text = data.get("email", "").strip()
+    text = data['email']
 
     if not text:
         return jsonify({"error": "Please enter some text or a URL"}), 400
@@ -31,18 +32,21 @@ def predict():
         email_text = text
 
     try:
-        X = vectorizer.transform([email_text])
-        prediction = clf.predict(X)[0]
-        confidence = clf.predict_proba(X)[0][prediction]
+        X = model.named_steps['tfidfvectorizer'].transform([email_text])
+        prediction = model.predict([email_text])[0]
+        proba = model.predict_proba([email_text])[0].max()
+
 
         result = "Spam" if prediction == 1 else "Not Spam"
 
         return jsonify({
             "prediction": result,
-            "confidence": f"{confidence * 100:.2f}%"
+            "confidence": f"{proba * 100:.2f}%"
         })
-    except Exception:
-        return jsonify({"error": "Something went wrong during prediction."}), 500
+    except Exception as e:
+        print("Exception occurred:")
+        traceback.print_exc()
+        return jsonify({"error": "Something went wrong during prediction."})
 
 if __name__ == "__main__":
     app.run(debug=True)

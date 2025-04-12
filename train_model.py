@@ -1,29 +1,21 @@
-# train_model.py
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.pipeline import make_pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-import pickle
+import pandas as pd
+import joblib
 
-# Example training dataset
-emails = [
-    "Congratulations! You've won a $1000 gift card",
-    "Click here to claim your prize",
-    "Hi, are we still meeting today?",
-    "Please find attached the report",
-    "Earn money fast with this trick",
-    "Hello friend, long time no see!"
-]
-labels = [1, 1, 0, 0, 1, 0]  # 1 = spam, 0 = not spam
+# Load your dataset
+data = pd.read_csv('your_dataset.csv')  # Replace with actual path
+X = data['text']
+y = data['label']
 
-# Convert text to feature vectors
-vectorizer = CountVectorizer()
-X = vectorizer.fit_transform(emails)
+# Create pipeline
+model = make_pipeline(TfidfVectorizer(), MultinomialNB())
 
-# Train the spam classifier
-clf = MultinomialNB()
-clf.fit(X, labels)
+# Train the model
+model.fit(X, y)
 
-# Save model + vectorizer into one file
-with open("spam_classifier.pkl", "wb") as f:
-    pickle.dump((vectorizer, clf), f)
+# Save the whole pipeline
+joblib.dump(model, 'spam_classifier.pkl')
 
-print("✅ Model trained and saved as spam_classifier.pkl")
+print("✅ Model trained and saved successfully.")
