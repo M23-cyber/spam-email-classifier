@@ -48,5 +48,5 @@ def predict():
         traceback.print_exc()
         return jsonify({"error": "Something went wrong during prediction."})
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000)
